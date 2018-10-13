@@ -1,0 +1,5 @@
+<?PHP
+// Global config file
+
+
+?>
