@@ -14,6 +14,7 @@ Maltego uses the idea of transforms to automate the process of querying differen
 ## Table of contents
 
  * [Local Transforms](#)
+ * [Local naming scheme](#)
  * [How to install](#)
  * [How to use](#)
  * [Maltego versions](#)
@@ -24,16 +25,10 @@ Maltego uses the idea of transforms to automate the process of querying differen
  * [Reporting Bugs](#)
  * [Subscribe](#)
 
+
 ## Local Transforms
 
 Here is a more detailed version and directly links into each local transform that i have made so far and are all included in this "local transform distribution" that i call Maltego DarkNET Transforms :: MDNT.
-
-> * **Our naming scheme is the following:** mdnt.{category}.{type}.{source}.{action}
-> * **{type} possibilities:**
->   * **ext** - Lookup from external data sources
->   * **tor** - TOR information
->   * **net** - IP/Network information
->   * **www** - Crawling things on the interwebs :)
 
 * **mdnt.business.ext.cvrdata.lookupcvr**
 > Description
@@ -44,6 +39,15 @@ Here is a more detailed version and directly links into each local transform tha
 * **mdnt.business.ext.cvrdata.lookuppnum**
 > Description
 > - Link
+
+## Local naming scheme
+
+* **Our naming scheme is the following:** mdnt.{category}.{type}.{source}.{action}
+* **{type} possibilities:**
+  * **ext** - Lookup from external data sources
+  * **tor** - TOR information
+  * **net** - IP/Network information
+  * **www** - Crawling things on the interwebs :)
 
 ## How to install
 
