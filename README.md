@@ -2,7 +2,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/davidbl.svg?style=social&label=Follow)](https://twitter.com/davidbl) [![GitHub issues](https://img.shields.io/github/issues/kawaiipantsu/maltego-darknet-transforms.svg)](https://github.com/kawaiipantsu/maltego-darknet-transforms/issues) [![GitHub closed issues](https://img.shields.io/github/issues-closed/kawaiipantsu/maltego-darknet-transforms.svg)](https://github.com/kawaiipantsu/maltego-darknet-transforms/issues) [![GitHub license](https://img.shields.io/github/license/kawaiipantsu/maltego-darknet-transforms.svg)](https://github.com/kawaiipantsu/maltego-darknet-transforms/blob/master/LICENSE) [![GitHub forks](https://img.shields.io/github/forks/kawaiipantsu/maltego-darknet-transforms.svg)](https://github.com/kawaiipantsu/maltego-darknet-transforms/network) [![GitHub stars](https://img.shields.io/github/stars/kawaiipantsu/maltego-darknet-transforms.svg)](https://github.com/kawaiipantsu/maltego-darknet-transforms/stargazers)
 > I love data and visualizing data!
 
-[![Maltego](https://threatconnect.com/wp-content/uploads/Logo-ThreatConnect-Partner-Maltego.png)](https://www.paterva.com/)
+[![Maltego](https://www.paterva.com/web7/img/itds-single.jpg)](https://www.paterva.com/)
 
 Maltego is an interactive data mining tool that renders directed graphs for link analysis. The tool is used in online investigations for finding relationships between pieces of information from various sources located on the Internet.
 
@@ -28,16 +28,22 @@ Maltego uses the idea of transforms to automate the process of querying differen
 
 Here is a more detailed version and directly links into each local transform that i have made so far and are all included in this "local transform distribution" that i call Maltego DarkNET Transforms :: MDNT.
 
-> * *Our naming scheme is the following:* mdnt.<category>.<type>.<source>.<action>
-> * *<type> possibilities:*
->   * *ext* - Lookup from external data sources
->   * *tor* - TOR information
->   * ** - Related to fetching information about Networks
->   * *net* - IP/Network information
+> * **Our naming scheme is the following:** mdnt.{category}.{type}.{source}.{action}
+> * **{type} possibilities:**
+>   * **ext** - Lookup from external data sources
+>   * **tor** - TOR information
+>   * **net** - IP/Network information
+>   * **www** - Crawling things on the interwebs :)
 
-* *mdnt.business.ext.cvrdata.lookupcvr*
-* *mdnt.business.ext.cvrdata.lookupperson*
-* *mdnt.business.ext.cvrdata.lookuppnum*
+* **mdnt.business.ext.cvrdata.lookupcvr**
+> Description
+> - Link
+* **mdnt.business.ext.cvrdata.lookupperson**
+> Description
+> - Link
+* **mdnt.business.ext.cvrdata.lookuppnum**
+> Description
+> - Link
 
 ## How to install
 
