@@ -48,6 +48,7 @@ Here is a more detailed version and directly links into each local transform tha
   * **tor** - TOR information
   * **net** - IP/Network information
   * **www** - Crawling things on the interwebs :)
+  * **tst** - Testing
 
 ## How to install
 

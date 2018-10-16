@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+    // Quick script to see what config values are active (mostly for debug)
+    require(dirname(__FILE__) . "/../includes/default.inc.php");
+    echo "\n=[ Active config options ]=========\n\n";
+    foreach ($config as $key => $value) {
+        printf(" %-20s = \"%s\"\n",$key,$value);
+    }
+    echo "\n===================================\n\n";
+?>
