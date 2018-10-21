@@ -1,2 +1,133 @@
-# Todo: File for creating MTZ files for import in Maltego
+#!/usr/bin/env php
+<?php
+/* MDT (MDNT) Help commands
+ *
+ * - mdt-create-mtz
+ *   This help command can create an "import" mtz file that you can use to import into your Maltego client.
+ *   It's a easy way to include these local transofrms rather than having to add them yourself.
+ * 
+ * Please note that this help command requires php-cli or that you have access to a php interperter from your
+ * command line prompt. I can't promise this works well on Windows :)
+ * 
+ * MTZ file type information
+ *  MTZ is a simple ZIP file that then contains the xml files and folders that Maltego understands.
+ *  So it's fairly easy to manipulate and then reassamble into a mtz file again.
+ */  
+// Let's include our MDNT system
+require(dirname(__FILE__) . "/../includes/default.inc.php");
 
+// First let's get our location on the system. (Don't forget to remove "bin")
+$mdnt_path = @str_replace("/bin","",dirname(__FILE__));
+
+// Set our default options and booleans
+$_verbose  = false;
+$_build    = false;
+$_os       = detectOS(); // linux, macos or windows
+$_path     = $mdnt_path; // Let's set what we already know!
+
+// Handle command line options
+// We setup the following command line options
+// -o, --os      = Set OS if not found out automatically
+// -p, --path    = Set path if not found out automatically 
+// -v, --verbose = Enable verbose mode
+// -b, --build   = Build the "import" MTZ file
+$shortopts = "o:p:vbh";
+$longopts  = array("os:","path:","verbose","build","help");
+$options = getopt($shortopts, $longopts);
+foreach ($options as $key => $value) {
+    switch (strtolower(trim($key))) {
+        case 'h':       // Let's handle help output first!
+            showHelp();
+            break;
+        case 'help':    // Let's handle help output first!
+            showHelp();
+            break;
+        case 'v':
+            $_verbose = true;
+            break;
+        case 'verbose':
+            $_verbose = true;
+            break;
+        case 'b':
+            $_build = true;
+            break;
+        case 'build':
+            $_build = true;
+            break;
+        case 'o':
+            $_os = trim(strtolower($value));
+            break;
+        case 'os':
+            $_os = trim(strtolower($value));
+            break;
+        case 'p':
+            $_path = trim($value);
+            break;
+        case 'path':
+            $_path = trim($value);
+            break;
+    }
+}
+
+if ($_verbose) {
+    echo "Pre-script verbose output :: OS = $_os\n";
+    echo "Pre-script verbose output :: Path = $_path\n";
+    if ($_build) echo "Pre-script verbose output :: Build MTZ = true\n";
+    else echo "Pre-script verbose output :: Build MTZ = false\n";
+    echo "\n";
+}
+
+
+// showHelp - Show help on command line
+function showHelp($exitcode=0) {
+    // Just old habits, i like to show the command terminal 80 chars length.
+    //80c ---------+---------+---------+---------+---------+---------+---------+----------
+    echo "Create MTZ import file\n";
+    echo "\n";
+    echo " Command options\n";
+    echo "  -o <os>, --os=<os>       :: Set OS if not detected. (not required)\n";
+    echo "  -p <path>, --path=<path> :: Set PATH if not detected. (not required)\n";
+    echo "  -b, --build              :: Build the MTZ file (required)\n";
+    echo "\n";
+    echo "  -v, --verbose            :: Show more verbose output (not required)\n";
+    echo "  -h, --help               :: Shwo this help message (not required)\n";
+    echo "\n";
+    echo " OS system names (not required)\n";
+    echo "  linux                    :: Unix and Linux (default)\n";
+    echo "  macos                    :: Apple MacOS\n";
+    echo "  windows                  :: Microsoft Windows\n";
+    echo "\n";
+    echo " Usage: mdt-create-mtz <options>\n";
+    echo "\n";
+    exit($exitcode); // We end here!
+}
+
+function showError($errstr) {
+    $bt = debug_backtrace();
+    $caller = array_shift($bt);
+    $me   = basename(trim($caller['file']));
+    $line = trim($caller['line']); // We use line to show where the error was made but also return it for exit status code
+    echo $me.": ".$errstr." ($line)\n";
+    return (int) $line;
+}
+
+function detectOS() {
+    $_os = "Unknown";
+    $_uname = php_uname();
+    if ( preg_match("/^darwin/i",$_uname) )   $_os = "macos";
+    if ( preg_match("/^linux/i",$_uname) )    $_os = "linux";
+    if ( preg_match("/^windows/i",$_uname) )  $_os = "windows";
+    if ( preg_match("/^winnt/i",$_uname) )    $_os = "windows";
+    return $_os;
+}
+
+// Let's try and do some sanity checks (if they fails, let's just show help screen for now)
+if ( $_os == "" || !preg_match("/^(linux|macos|windows)\$/",$_os) ) {
+    showHelp(showError("Error, OS not detected"));   // OS is empty
+}
+if ( $_path == "" || !is_dir($_path) || !is_dir($_path."/transforms" ) ) {
+    showHelp(showError("Error, PATH not detected")); // Path is empty
+}
+
+
+?>
