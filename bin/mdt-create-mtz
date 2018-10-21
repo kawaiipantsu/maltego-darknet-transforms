@@ -20,6 +20,7 @@ require(dirname(__FILE__) . "/../includes/default.inc.php");
 $mdnt_path = @str_replace("/bin","",dirname(__FILE__));
 
 // Set our default options and booleans
+$_debug    = false;
 $_verbose  = false;
 $_build    = false;
 $_os       = detectOS(); // linux, macos or windows
@@ -31,8 +32,9 @@ $_path     = $mdnt_path; // Let's set what we already know!
 // -p, --path    = Set path if not found out automatically 
 // -v, --verbose = Enable verbose mode
 // -b, --build   = Build the "import" MTZ file
+// --debug       = Give debug output
 $shortopts = "o:p:vbh";
-$longopts  = array("os:","path:","verbose","build","help");
+$longopts  = array("os:","path:","verbose","build","help","debug");
 $options = getopt($shortopts, $longopts);
 foreach ($options as $key => $value) {
     switch (strtolower(trim($key))) {
@@ -47,6 +49,9 @@ foreach ($options as $key => $value) {
             break;
         case 'verbose':
             $_verbose = true;
+            break;
+        case 'debug':
+            $_debug = true;
             break;
         case 'b':
             $_build = true;
@@ -69,17 +74,9 @@ foreach ($options as $key => $value) {
     }
 }
 
-if ($_verbose) {
-    echo "Pre-script verbose output :: OS = $_os\n";
-    echo "Pre-script verbose output :: Path = $_path\n";
-    if ($_build) echo "Pre-script verbose output :: Build MTZ = true\n";
-    else echo "Pre-script verbose output :: Build MTZ = false\n";
-    echo "\n";
-}
-
-
 // showHelp - Show help on command line
 function showHelp($exitcode=0) {
+    global $_debug;
     // Just old habits, i like to show the command terminal 80 chars length.
     //80c ---------+---------+---------+---------+---------+---------+---------+----------
     echo "Create MTZ import file\n";
@@ -103,6 +100,7 @@ function showHelp($exitcode=0) {
 }
 
 function showError($errstr) {
+    global $_debug;
     $bt = debug_backtrace();
     $caller = array_shift($bt);
     $me   = basename(trim($caller['file']));
@@ -112,6 +110,7 @@ function showError($errstr) {
 }
 
 function detectOS() {
+    global $_debug;
     $_os = "Unknown";
     $_uname = php_uname();
     if ( preg_match("/^darwin/i",$_uname) )   $_os = "macos";
@@ -121,6 +120,85 @@ function detectOS() {
     return $_os;
 }
 
+function getTransforms() {
+    global $_debug;
+    global $_os;
+    global $_path;
+    $transform_path = $_path."/transforms";
+    if (!is_dir($transform_path) ) showHelp(showError("Error, can't find transforms directory"));
+    $transforms = array();
+    if ($handle = opendir($transform_path)) {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != "..") {
+                if ( preg_match("/^mdnt\./",$entry) ) {
+                    $transforms[str_replace(".php","",trim($entry))] = readSettings($entry);
+                    $transforms[str_replace(".php","",trim($entry))]["filename"] = trim($entry);
+                }
+            }
+        }
+        closedir($handle);
+    }
+    return $transforms;
+}
+
+function readSettings($transform) {
+    global $_debug;
+    global $_os;
+    global $_path;
+
+    $settings = array(
+        "name" => "Unknown ".rand(100000,999999),
+        "description" => "Missing description ... Please fix me!",
+        "active" => "no", // Let's not activate any of them if they have these default settings!!
+    );
+    
+    // This an example of what to expect somewhere in the first 15 lines of each Transform file!
+
+    //* ***
+    //* Name.......: [MDNT] Example: Debug, Phrase output test
+    //* Description: This debug example will output a default Phrase entity test object
+    //*
+    //* Active.....: true
+
+    // Read transform files and parse them on the fly
+    $file = $_path."/transforms/".$transform;
+    $fh = fopen($file, 'rb');
+    for ($i = 0; $i < 15; $i++) { // We only read the first 15 lines, the settings should always be first in the file!
+        $line = fgets($fh);
+        if ( preg_match("/[ ]+\* Name[\.]*: (.*)/i",$line,$out) ) { // We found the Name!
+            $settings["name"] = trim($out[1]);
+        }
+        if ( preg_match("/[ ]+\* Description[\.]*: (.*)/i",$line,$out) ) { // We found the Description!
+            $settings["description"] = trim($out[1]);
+        }
+        if ( preg_match("/[ ]+\* Active[\.]*: (no|false|off)/i",$line,$out) ) { // We found the Name!
+            $settings["active"] = false;
+        }
+        if ( preg_match("/[ ]+\* Active[\.]*: (yes|true|on)/i",$line,$out) ) { // We found the Name!
+            $settings["active"] = true;
+        }
+    }
+    fclose($fh);
+    // Return the settings!
+    return $settings;
+}
+
+
+
+// *** Main help command script
+$_transforms = getTransforms();
+
+if ($_debug) {
+    echo "Pre-script debug output :: OS = $_os\n";
+    echo "Pre-script debug output :: Path = $_path\n";
+    if ($_build) echo "Pre-script debug output :: Build MTZ = true\n";
+    else echo "Pre-script debug output :: Build MTZ = false\n";
+    foreach ($_transforms as $_transform => $_transform_settings) {
+        echo "Pre-script debug output :: Local Transform(s) found: ".$_transform_settings["name"]." (Active:".$_transform_settings["active"].")\n";
+    }
+    echo "\n";
+}
+
 // Let's try and do some sanity checks (if they fails, let's just show help screen for now)
 if ( $_os == "" || !preg_match("/^(linux|macos|windows)\$/",$_os) ) {
     showHelp(showError("Error, OS not detected"));   // OS is empty
@@ -128,6 +206,5 @@ if ( $_os == "" || !preg_match("/^(linux|macos|windows)\$/",$_os) ) {
 if ( $_path == "" || !is_dir($_path) || !is_dir($_path."/transforms" ) ) {
     showHelp(showError("Error, PATH not detected")); // Path is empty
 }
-
 
 ?>

@@ -1,11 +1,18 @@
 <?php
 /**
- * mdnt.examples.net.dns.resolveip
- * 
- * This will just resovle an IP address into a DNS name.
- * 
- */
+ * ***
+ * Name.......: [MDNT] Example: Resolve IP
+ * Description: This network example will resolve a single IP into a DNS hostname
+ *
+ * Active.....: True
+ * ***
+ * Please note that you need to change the above 3 items to reflect this local transforms.
+ * If you copy/paste from other transforms your might end up with dublicate Name and dublicate
+ * Description.
+ * ***
+ **/
 
+// Include the global system
 require(dirname(__FILE__) . "/../includes/default.inc.php");
 
 // Initiate the Maltego Local Transform Class
@@ -24,11 +31,6 @@ if (filter_var($ip, FILTER_VALIDATE_IP)) {
 } else {
     $mt->debug("Input was not an IP address");
 }
-
-
-
-
-
 
 // Send the output to Maltego
 $mt->returnOutput();

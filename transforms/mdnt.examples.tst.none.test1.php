@@ -1,10 +1,16 @@
 <?php
 /**
- * mdnt.examples.tst.none.test1
- * 
- * This will just return a Phrase and dump the $argv to log window.
- * 
- */
+ * ***
+ * Name.......: [MDNT] Example: Debug, Phrase output test
+ * Description: This debug example will output a default Phrase entity test object
+ *
+ * Active.....: Yes
+ * ***
+ * Please note that you need to change the above 3 items to reflect this local transforms.
+ * If you copy/paste from other transforms your might end up with dublicate Name and dublicate
+ * Description.
+ * ***
+ **/
 
 require(dirname(__FILE__) . "/../includes/default.inc.php");
 
